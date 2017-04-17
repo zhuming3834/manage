@@ -7,7 +7,7 @@
 		</div>
 		 <div class="content-body">
 		 	<div>
-				<el-carousel :interval="5000" arrow="always">
+				<el-carousel :interval="3000" arrow="always">
 				    <el-carousel-item v-for="item in banners" :key="item.name">
 				      <img v-bind:src="item.imageUrl" v-bind:alt="item.name" />
 				    </el-carousel-item>
