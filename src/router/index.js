@@ -53,6 +53,10 @@ export default new Router({
 			        path: '/echarts',
 			        component: resolve => require(['../components/page/ECharts.vue'], resolve)
 			    },
+			    {
+			        path: '/qrcode',
+			        component: resolve => require(['../components/page/Qrcode.vue'], resolve)
+			    },
             ]
         },
         {

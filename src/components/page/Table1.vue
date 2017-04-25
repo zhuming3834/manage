@@ -1,5 +1,5 @@
 <template>
-	<div style="height: calc(100% - 80px); width: 100%;">
+	<div class="content-detail">
 		<div class="content-header">
 			<el-breadcrumb separator="/">
 			  <el-breadcrumb-item>表格</el-breadcrumb-item>

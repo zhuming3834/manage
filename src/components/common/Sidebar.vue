@@ -19,12 +19,12 @@
 		<div class="meau">
 			<el-menu default-active="1" class="el-menu-vertical-demo" router="true">
 		        <el-submenu index="1">
-			        <template slot="title"><i class="el-icon-menu"></i>表格</template>
+			        <template slot="title"><i class="iconfont icon-biaoge"></i>表格</template>
 			        <el-menu-item index="table1">基础表格</el-menu-item>
 			        <el-menu-item index="table2">固定列表格</el-menu-item>
 			        <el-menu-item index="table3">筛选表格</el-menu-item>
 		        </el-submenu>
-		        <el-menu-item index="carousel"><i class="el-icon-message"></i>走马灯</el-menu-item>
+		        <el-menu-item index="carousel"><i class="iconfont icon-lunbotu"></i>走马灯</el-menu-item>
 		        <el-submenu index="2">
 			        <template slot="title"><i class="el-icon-menu"></i>表单</template>
 			        <el-menu-item index="radio">Radio单选框</el-menu-item>
@@ -32,7 +32,8 @@
 			        <el-menu-item index="input">Input 输入框</el-menu-item>
 			        <el-menu-item index="select">Select 选择器</el-menu-item>
 		        </el-submenu>
-		        <el-menu-item index="echarts"><i class="el-icon-message"></i>ECharts</el-menu-item>
+		        <el-menu-item index="echarts"><i class="iconfont icon-tubiao"></i>ECharts</el-menu-item>
+		        <el-menu-item index="qrcode"><i class="iconfont icon-erweima"></i>二维码</el-menu-item>
 		    </el-menu>
 		</div>
 	</div>
