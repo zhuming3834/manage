@@ -46,73 +46,19 @@ module.exports =
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(250);
+	module.exports = __webpack_require__(255);
 
 
 /***/ },
 
-/***/ 3:
-/***/ function(module, exports) {
-
-	module.exports = function normalizeComponent (
-	  rawScriptExports,
-	  compiledTemplate,
-	  scopeId,
-	  cssModules
-	) {
-	  var esModule
-	  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-	  // ES6 modules interop
-	  var type = typeof rawScriptExports.default
-	  if (type === 'object' || type === 'function') {
-	    esModule = rawScriptExports
-	    scriptExports = rawScriptExports.default
-	  }
-
-	  // Vue.extend constructor export interop
-	  var options = typeof scriptExports === 'function'
-	    ? scriptExports.options
-	    : scriptExports
-
-	  // render functions
-	  if (compiledTemplate) {
-	    options.render = compiledTemplate.render
-	    options.staticRenderFns = compiledTemplate.staticRenderFns
-	  }
-
-	  // scopedId
-	  if (scopeId) {
-	    options._scopeId = scopeId
-	  }
-
-	  // inject cssModules
-	  if (cssModules) {
-	    var computed = options.computed || (options.computed = {})
-	    Object.keys(cssModules).forEach(function (key) {
-	      var module = cssModules[key]
-	      computed[key] = function () { return module }
-	    })
-	  }
-
-	  return {
-	    esModule: esModule,
-	    exports: scriptExports,
-	    options: options
-	  }
-	}
-
-
-/***/ },
-
-/***/ 250:
+/***/ 255:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _row = __webpack_require__(251);
+	var _row = __webpack_require__(256);
 
 	var _row2 = _interopRequireDefault(_row);
 
@@ -127,51 +73,22 @@ module.exports =
 
 /***/ },
 
-/***/ 251:
-/***/ function(module, exports, __webpack_require__) {
-
-	var Component = __webpack_require__(3)(
-	  /* script */
-	  __webpack_require__(252),
-	  /* template */
-	  __webpack_require__(253),
-	  /* scopeId */
-	  null,
-	  /* cssModules */
-	  null
-	)
-
-	module.exports = Component.exports
-
-
-/***/ },
-
-/***/ 252:
+/***/ 256:
 /***/ function(module, exports) {
 
 	'use strict';
 
 	exports.__esModule = true;
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-
 	exports.default = {
 	  name: 'ElRow',
 
+	  componentName: 'ElRow',
+
 	  props: {
+	    tag: {
+	      type: String,
+	      default: 'div'
+	    },
 	    gutter: Number,
 	    type: String,
 	    justify: {
@@ -195,26 +112,15 @@ module.exports =
 
 	      return ret;
 	    }
+	  },
+
+	  render: function render(h) {
+	    return h(this.tag, {
+	      class: ['el-row', this.justify !== 'start' ? 'is-justify-' + this.justify : '', this.align !== 'top' ? 'is-align-' + this.align : '', { 'el-row--flex': this.type === 'flex' }],
+	      style: this.style
+	    }, this.$slots.default);
 	  }
 	};
-
-/***/ },
-
-/***/ 253:
-/***/ function(module, exports) {
-
-	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-	  return _c('div', {
-	    staticClass: "el-row",
-	    class: [
-	      _vm.justify !== 'start' ? 'is-justify-' + _vm.justify : '',
-	      _vm.align !== 'top' ? 'is-align-' + _vm.align : '', {
-	        'el-row--flex': _vm.type === 'flex'
-	      }
-	    ],
-	    style: (_vm.style)
-	  }, [_vm._t("default")], 2)
-	},staticRenderFns: []}
 
 /***/ }
 

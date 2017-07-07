@@ -46,33 +46,33 @@ module.exports =
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(316);
+	module.exports = __webpack_require__(320);
 
 
 /***/ },
 
-/***/ 164:
+/***/ 169:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/utils/merge");
 
 /***/ },
 
-/***/ 266:
+/***/ 269:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/tag");
 
 /***/ },
 
-/***/ 304:
+/***/ 307:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/checkbox");
 
 /***/ },
 
-/***/ 306:
+/***/ 309:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -176,14 +176,14 @@ module.exports =
 
 /***/ },
 
-/***/ 316:
+/***/ 320:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _tableColumn = __webpack_require__(317);
+	var _tableColumn = __webpack_require__(321);
 
 	var _tableColumn2 = _interopRequireDefault(_tableColumn);
 
@@ -198,26 +198,26 @@ module.exports =
 
 /***/ },
 
-/***/ 317:
+/***/ 321:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _checkbox = __webpack_require__(304);
+	var _checkbox = __webpack_require__(307);
 
 	var _checkbox2 = _interopRequireDefault(_checkbox);
 
-	var _tag = __webpack_require__(266);
+	var _tag = __webpack_require__(269);
 
 	var _tag2 = _interopRequireDefault(_tag);
 
-	var _merge = __webpack_require__(164);
+	var _merge = __webpack_require__(169);
 
 	var _merge2 = _interopRequireDefault(_merge);
 
-	var _util = __webpack_require__(306);
+	var _util = __webpack_require__(309);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -259,9 +259,8 @@ module.exports =
 	          nativeOn: {
 	            'click': this.toggleAllSelection
 	          },
-	          domProps: {
-	            'value': this.isAllSelected
-	          }
+	          attrs: {
+	            value: this.isAllSelected }
 	        },
 	        []
 	      );
@@ -275,10 +274,8 @@ module.exports =
 	      return h(
 	        'el-checkbox',
 	        {
-	          domProps: {
-	            'value': store.isSelected(row)
-	          },
 	          attrs: {
+	            value: store.isSelected(row),
 	            disabled: column.selectable ? !column.selectable.call(null, row, $index) : false
 	          },
 	          on: {
@@ -420,6 +417,7 @@ module.exports =
 	    filterMethod: Function,
 	    filteredValue: Array,
 	    filters: Array,
+	    filterPlacement: String,
 	    filterMultiple: {
 	      type: Boolean,
 	      default: true
@@ -516,7 +514,8 @@ module.exports =
 	      filterable: this.filters || this.filterMethod,
 	      filterMultiple: this.filterMultiple,
 	      filterOpened: false,
-	      filteredValue: this.filteredValue || []
+	      filteredValue: this.filteredValue || [],
+	      filterPlacement: this.filterPlacement || ''
 	    });
 
 	    (0, _merge2.default)(column, forced[type] || {});
@@ -571,7 +570,7 @@ module.exports =
 
 	      return _self.showOverflowTooltip || _self.showTooltipWhenOverflow ? h(
 	        'div',
-	        { 'class': 'cell el-tooltip' },
+	        { 'class': 'cell el-tooltip', style: 'width:' + (data.column.realWidth || data.column.width) + 'px' },
 	        [renderCell(h, data)]
 	      ) : h(
 	        'div',
@@ -642,6 +641,11 @@ module.exports =
 	      if (this.columnConfig) {
 	        this.columnConfig.fixed = newVal;
 	        this.owner.store.scheduleLayout();
+	      }
+	    },
+	    sortable: function sortable(newVal) {
+	      if (this.columnConfig) {
+	        this.columnConfig.sortable = newVal;
 	      }
 	    }
 	  },

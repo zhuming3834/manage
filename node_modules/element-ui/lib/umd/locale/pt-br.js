@@ -79,11 +79,12 @@
       },
       cascader: {
         noMatch: 'Sem resultados',
+        loading: 'Carregando',
         placeholder: 'Selecione'
       },
       pagination: {
         goto: 'Ir para',
-        pagesize: '/pagina',
+        pagesize: '/página',
         total: 'Total {total}',
         pageClassifier: ''
       },
@@ -102,10 +103,19 @@
         emptyText: 'Sem dados',
         confirmFilter: 'Confirmar',
         resetFilter: 'Limpar',
-        clearFilter: 'Todos'
+        clearFilter: 'Todos',
+        sumText: 'Total'
       },
       tree: {
         emptyText: 'Sem dados'
+      },
+      transfer: {
+        noMatch: 'Sem resultados',
+        noData: 'Sem dados',
+        titles: ['Lista 1', 'Lista 2'],
+        filterPlaceholder: 'Digite uma palavra-chave',
+        noCheckedFormat: '{total} itens',
+        hasCheckedFormat: '{checked}/{total} selecionados'
       }
     }
   };

@@ -29,7 +29,11 @@
     name: 'ElCarouselItem',
 
     props: {
-      name: String
+      name: String,
+      label: {
+        type: [String, Number],
+        default: ''
+      }
     },
 
     data() {
@@ -95,11 +99,11 @@
     },
 
     created() {
-      this.$parent && this.$parent.handleItemChange();
+      this.$parent && this.$parent.updateItems();
     },
 
     destroyed() {
-      this.$parent && this.$parent.handleItemChange();
+      this.$parent && this.$parent.updateItems();
     }
   };
 </script>

@@ -1,14 +1,19 @@
 <template>
   <transition name="msgbox-fade">
-    <div class="el-message-box__wrapper" v-show="value" @click.self="handleWrapperClick">
+    <div class="el-message-box__wrapper" tabindex="-1" v-show="visible" @click.self="handleWrapperClick">
       <div class="el-message-box" :class="customClass">
         <div class="el-message-box__header" v-if="title !== undefined">
           <div class="el-message-box__title">{{ title || t('el.messagebox.title') }}</div>
-          <i class="el-message-box__close el-icon-close" @click="handleAction('cancel')" v-if="showClose"></i>
+          <button type="button" class="el-message-box__headerbtn" aria-label="Close" 
+                  v-if="showClose" @click="handleAction('cancel')">
+            <i class="el-message-box__close el-icon-close"></i>
+          </button>
         </div>
         <div class="el-message-box__content" v-if="message !== ''">
           <div class="el-message-box__status" :class="[ typeClass ]"></div>
-          <div class="el-message-box__message" :style="{ 'margin-left': typeClass ? '50px' : '0' }"><p>{{ message }}</p></div>
+          <div class="el-message-box__message" :style="{ 'margin-left': typeClass ? '50px' : '0' }">
+            <slot><p>{{ message }}</p></slot>
+          </div>
           <div class="el-message-box__input" v-show="showInput">
             <el-input v-model="inputValue" @keyup.enter.native="handleAction('confirm')" :placeholder="inputPlaceholder" ref="input"></el-input>
             <div class="el-message-box__errormsg" :style="{ visibility: !!editorErrorMessage ? 'visible' : 'hidden' }">{{ editorErrorMessage }}</div>
@@ -101,8 +106,8 @@
         };
       },
       doClose() {
-        if (!this.value) return;
-        this.value = false;
+        if (!this.visible) return;
+        this.visible = false;
         this._closing = true;
 
         this.onClose && this.onClose();
@@ -127,8 +132,7 @@
 
       handleWrapperClick() {
         if (this.closeOnClickModal) {
-          this.action = '';
-          this.doClose();
+          this.handleAction('cancel');
         }
       },
 
@@ -185,7 +189,7 @@
         }
       },
 
-      value(val) {
+      visible(val) {
         if (val) this.uid++;
         if (this.$type === 'alert' || this.$type === 'confirm') {
           this.$nextTick(() => {

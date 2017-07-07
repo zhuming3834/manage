@@ -65,6 +65,11 @@ exports.default = {
       noData: 'Žiadne dáta',
       placeholder: 'Vybrať'
     },
+    cascader: {
+      noMatch: 'Žiadna zhoda',
+      loading: 'Načítavanie',
+      placeholder: 'Vybrať'
+    },
     pagination: {
       goto: 'Choď na',
       pagesize: 'na stranu',
@@ -86,10 +91,19 @@ exports.default = {
       emptyText: 'Žiadne dáta',
       confirmFilter: 'Potvrdiť',
       resetFilter: 'Zresetovať',
-      clearFilter: 'Všetko'
+      clearFilter: 'Všetko',
+      sumText: 'Spolu'
     },
     tree: {
       emptyText: 'Žiadne dáta'
+    },
+    transfer: {
+      noMatch: 'Žiadna zhoda',
+      noData: 'Žiadne dáta',
+      titles: ['Zoznam 1', 'Zoznam 2'],
+      filterPlaceholder: 'Filtrovať podľa',
+      noCheckedFormat: '{total} položiek',
+      hasCheckedFormat: '{checked}/{total} označených'
     }
   }
 };

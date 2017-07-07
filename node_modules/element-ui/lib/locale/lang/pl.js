@@ -65,6 +65,7 @@ exports.default = {
     },
     cascader: {
       noMatch: 'Brak dopasowań',
+      loading: 'Ładowanie',
       placeholder: 'Wybierz'
     },
     pagination: {
@@ -88,10 +89,19 @@ exports.default = {
       emptyText: 'Brak danych',
       confirmFilter: 'Potwierdź',
       resetFilter: 'Resetuj',
-      clearFilter: 'Wszystko'
+      clearFilter: 'Wszystko',
+      sumText: 'Sum' // to be translated
     },
     tree: {
       emptyText: 'Brak danych'
+    },
+    transfer: {
+      noMatch: 'Brak dopasowań',
+      noData: 'Brak danych',
+      titles: ['List 1', 'List 2'], // to be translated
+      filterPlaceholder: 'Enter keyword', // to be translated
+      noCheckedFormat: '{total} items', // to be translated
+      hasCheckedFormat: '{checked}/{total} checked' // to be translated
     }
   }
 };

@@ -46,7 +46,7 @@ module.exports =
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(129);
+	module.exports = __webpack_require__(134);
 
 
 /***/ },
@@ -54,11 +54,17 @@ module.exports =
 /***/ 3:
 /***/ function(module, exports) {
 
+	/* globals __VUE_SSR_CONTEXT__ */
+
+	// this module is a runtime utility for cleaner component module output and will
+	// be included in the final webpack user bundle
+
 	module.exports = function normalizeComponent (
 	  rawScriptExports,
 	  compiledTemplate,
+	  injectStyles,
 	  scopeId,
-	  cssModules
+	  moduleIdentifier /* server only */
 	) {
 	  var esModule
 	  var scriptExports = rawScriptExports = rawScriptExports || {}
@@ -86,13 +92,37 @@ module.exports =
 	    options._scopeId = scopeId
 	  }
 
-	  // inject cssModules
-	  if (cssModules) {
-	    var computed = options.computed || (options.computed = {})
-	    Object.keys(cssModules).forEach(function (key) {
-	      var module = cssModules[key]
-	      computed[key] = function () { return module }
-	    })
+	  var hook
+	  if (moduleIdentifier) { // server build
+	    hook = function (context) {
+	      // 2.3 injection
+	      context = context || (this.$vnode && this.$vnode.ssrContext)
+	      // 2.2 with runInNewContext: true
+	      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+	        context = __VUE_SSR_CONTEXT__
+	      }
+	      // inject component styles
+	      if (injectStyles) {
+	        injectStyles.call(this, context)
+	      }
+	      // register component module identifier for async chunk inferrence
+	      if (context && context._registeredComponents) {
+	        context._registeredComponents.add(moduleIdentifier)
+	      }
+	    }
+	    // used by ssr in case component is cached and beforeCreate
+	    // never gets called
+	    options._ssrRegister = hook
+	  } else if (injectStyles) {
+	    hook = injectStyles
+	  }
+
+	  if (hook) {
+	    // inject component registration as beforeCreate hook
+	    var existing = options.beforeCreate
+	    options.beforeCreate = existing
+	      ? [].concat(existing, hook)
+	      : [hook]
 	  }
 
 	  return {
@@ -105,21 +135,21 @@ module.exports =
 
 /***/ },
 
-/***/ 14:
+/***/ 13:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/mixins/emitter");
 
 /***/ },
 
-/***/ 129:
+/***/ 134:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _component = __webpack_require__(130);
+	var _component = __webpack_require__(135);
 
 	var _component2 = _interopRequireDefault(_component);
 
@@ -134,17 +164,19 @@ module.exports =
 
 /***/ },
 
-/***/ 130:
+/***/ 135:
 /***/ function(module, exports, __webpack_require__) {
 
 	var Component = __webpack_require__(3)(
 	  /* script */
-	  __webpack_require__(131),
+	  __webpack_require__(136),
 	  /* template */
-	  __webpack_require__(133),
+	  __webpack_require__(138),
+	  /* styles */
+	  null,
 	  /* scopeId */
 	  null,
-	  /* cssModules */
+	  /* moduleIdentifier (server only) */
 	  null
 	)
 
@@ -153,23 +185,24 @@ module.exports =
 
 /***/ },
 
-/***/ 131:
+/***/ 136:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _popup = __webpack_require__(132);
+	var _popup = __webpack_require__(137);
 
 	var _popup2 = _interopRequireDefault(_popup);
 
-	var _emitter = __webpack_require__(14);
+	var _emitter = __webpack_require__(13);
 
 	var _emitter2 = _interopRequireDefault(_emitter);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//
 	//
 	//
 	//
@@ -250,23 +283,15 @@ module.exports =
 	    top: {
 	      type: String,
 	      default: '15%'
-	    }
+	    },
+	    beforeClose: Function
 	  },
-	  data: function data() {
-	    return {
-	      visible: false
-	    };
-	  },
-
 
 	  watch: {
-	    value: function value(val) {
-	      this.visible = val;
-	    },
 	    visible: function visible(val) {
 	      var _this = this;
 
-	      this.$emit('input', val);
+	      this.$emit('update:visible', val);
 	      if (val) {
 	        this.$emit('open');
 	        this.$el.addEventListener('scroll', this.updatePopper);
@@ -291,8 +316,20 @@ module.exports =
 
 	  methods: {
 	    handleWrapperClick: function handleWrapperClick() {
-	      if (this.closeOnClickModal) {
-	        this.close();
+	      if (!this.closeOnClickModal) return;
+	      this.handleClose();
+	    },
+	    handleClose: function handleClose() {
+	      if (typeof this.beforeClose === 'function') {
+	        this.beforeClose(this.hide);
+	      } else {
+	        this.hide();
+	      }
+	    },
+	    hide: function hide(cancel) {
+	      if (cancel !== false) {
+	        this.$emit('update:visible', false);
+	        this.$emit('visible-change', false);
 	      }
 	    },
 	    updatePopper: function updatePopper() {
@@ -302,7 +339,7 @@ module.exports =
 	  },
 
 	  mounted: function mounted() {
-	    if (this.value) {
+	    if (this.visible) {
 	      this.rendered = true;
 	      this.open();
 	    }
@@ -311,14 +348,14 @@ module.exports =
 
 /***/ },
 
-/***/ 132:
+/***/ 137:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/utils/popup");
 
 /***/ },
 
-/***/ 133:
+/***/ 138:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -336,7 +373,7 @@ module.exports =
 	    staticClass: "el-dialog__wrapper",
 	    on: {
 	      "click": function($event) {
-	        if ($event.target !== $event.currentTarget) { return; }
+	        if ($event.target !== $event.currentTarget) { return null; }
 	        _vm.handleWrapperClick($event)
 	      }
 	    }
@@ -349,16 +386,18 @@ module.exports =
 	    staticClass: "el-dialog__header"
 	  }, [_vm._t("title", [_c('span', {
 	    staticClass: "el-dialog__title"
-	  }, [_vm._v(_vm._s(_vm.title))])]), _c('div', {
-	    staticClass: "el-dialog__headerbtn"
-	  }, [(_vm.showClose) ? _c('i', {
-	    staticClass: "el-dialog__close el-icon el-icon-close",
+	  }, [_vm._v(_vm._s(_vm.title))])]), (_vm.showClose) ? _c('button', {
+	    staticClass: "el-dialog__headerbtn",
+	    attrs: {
+	      "type": "button",
+	      "aria-label": "Close"
+	    },
 	    on: {
-	      "click": function($event) {
-	        _vm.close()
-	      }
+	      "click": _vm.handleClose
 	    }
-	  }) : _vm._e()])], 2), (_vm.rendered) ? _c('div', {
+	  }, [_c('i', {
+	    staticClass: "el-dialog__close el-icon el-icon-close"
+	  })]) : _vm._e()], 2), (_vm.rendered) ? _c('div', {
 	    staticClass: "el-dialog__body"
 	  }, [_vm._t("default")], 2) : _vm._e(), (_vm.$slots.footer) ? _c('div', {
 	    staticClass: "el-dialog__footer"

@@ -79,6 +79,7 @@
       },
       cascader: {
         noMatch: '맞는 데이터가 없습니다',
+        loading: '불러오는 중',
         placeholder: '선택'
       },
       pagination: {
@@ -102,10 +103,19 @@
         emptyText: '데이터 없음',
         confirmFilter: '확인',
         resetFilter: '초기화',
-        clearFilter: '전체'
+        clearFilter: '전체',
+        sumText: '합'
       },
       tree: {
         emptyText: '데이터 없음'
+      },
+      transfer: {
+        noMatch: '맞는 데이터가 없습니다',
+        noData: '데이터 없음',
+        titles: ['리스트 1', '리스트 2'],
+        filterPlaceholder: ' 입력하세요',
+        noCheckedFormat: '{total} 항목',
+        hasCheckedFormat: '{checked}/{total} 선택됨'
       }
     }
   };

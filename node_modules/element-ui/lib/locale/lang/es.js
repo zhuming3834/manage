@@ -65,6 +65,7 @@ exports.default = {
     },
     cascader: {
       noMatch: 'No hay datos que coincidan',
+      loading: 'Cargando',
       placeholder: 'Seleccionar'
     },
     pagination: {
@@ -87,10 +88,19 @@ exports.default = {
       emptyText: 'Sin Datos',
       confirmFilter: 'Confirmar',
       resetFilter: 'Limpiar',
-      clearFilter: 'Todo'
+      clearFilter: 'Todo',
+      sumText: 'Sum' // to be translated
     },
     tree: {
       emptyText: 'Sin Datos'
+    },
+    transfer: {
+      noMatch: 'No hay datos que coincidan',
+      noData: 'Sin datos',
+      titles: ['List 1', 'List 2'], // to be translated
+      filterPlaceholder: 'Enter keyword', // to be translated
+      noCheckedFormat: '{total} items', // to be translated
+      hasCheckedFormat: '{checked}/{total} checked' // to be translated
     }
   }
 };

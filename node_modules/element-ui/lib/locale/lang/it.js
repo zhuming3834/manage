@@ -60,11 +60,12 @@ exports.default = {
     select: {
       loading: 'Caricamento',
       noMatch: 'Nessuna corrispondenza',
-      noData: 'Nessun risultato',
+      noData: 'Nessun dato',
       placeholder: 'Seleziona'
     },
     cascader: {
       noMatch: 'Nessuna corrispondenza',
+      loading: 'Caricamento',
       placeholder: 'Seleziona'
     },
     pagination: {
@@ -87,10 +88,19 @@ exports.default = {
       emptyText: 'Nessun dato',
       confirmFilter: 'Conferma',
       resetFilter: 'Reset',
-      clearFilter: 'Tutti'
+      clearFilter: 'Tutti',
+      sumText: 'Sum' // to be translated
     },
     tree: {
       emptyText: 'Nessun dato'
+    },
+    transfer: {
+      noMatch: 'Nessuna corrispondenza',
+      noData: 'Nessun dato',
+      titles: ['List 1', 'List 2'], // to be translated
+      filterPlaceholder: 'Enter keyword', // to be translated
+      noCheckedFormat: '{total} items', // to be translated
+      hasCheckedFormat: '{checked}/{total} checked' // to be translated
     }
   }
 };

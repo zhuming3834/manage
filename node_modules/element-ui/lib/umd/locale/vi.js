@@ -72,13 +72,14 @@
         }
       },
       select: {
-        loading: 'Loading',
+        loading: 'Đang tải',
         noMatch: 'Dữ liệu không phù hợp',
         noData: 'Không tìm thấy dữ liệu',
         placeholder: 'Chọn'
       },
       cascader: {
         noMatch: 'Dữ liệu không phù hợp',
+        loading: 'Đang tải',
         placeholder: 'Chọn'
       },
       pagination: {
@@ -102,10 +103,19 @@
         emptyText: 'Không có dữ liệu',
         confirmFilter: 'Xác nhận',
         resetFilter: 'Làm mới',
-        clearFilter: 'Xóa hết'
+        clearFilter: 'Xóa hết',
+        sumText: 'Tổng'
       },
       tree: {
         emptyText: 'Không có dữ liệu'
+      },
+      transfer: {
+        noMatch: 'Dữ liệu không phù hợp',
+        noData: 'Không tìm thấy dữ liệu',
+        titles: ['Danh sách 1', 'Danh sách 2'],
+        filterPlaceholder: 'Nhập từ khóa',
+        noCheckedFormat: '{total} mục',
+        hasCheckedFormat: '{checked}/{total} đã chọn '
       }
     }
   };

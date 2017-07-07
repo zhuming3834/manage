@@ -46,7 +46,7 @@ module.exports =
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(218);
+	module.exports = __webpack_require__(223);
 
 
 /***/ },
@@ -54,11 +54,17 @@ module.exports =
 /***/ 3:
 /***/ function(module, exports) {
 
+	/* globals __VUE_SSR_CONTEXT__ */
+
+	// this module is a runtime utility for cleaner component module output and will
+	// be included in the final webpack user bundle
+
 	module.exports = function normalizeComponent (
 	  rawScriptExports,
 	  compiledTemplate,
+	  injectStyles,
 	  scopeId,
-	  cssModules
+	  moduleIdentifier /* server only */
 	) {
 	  var esModule
 	  var scriptExports = rawScriptExports = rawScriptExports || {}
@@ -86,13 +92,37 @@ module.exports =
 	    options._scopeId = scopeId
 	  }
 
-	  // inject cssModules
-	  if (cssModules) {
-	    var computed = options.computed || (options.computed = {})
-	    Object.keys(cssModules).forEach(function (key) {
-	      var module = cssModules[key]
-	      computed[key] = function () { return module }
-	    })
+	  var hook
+	  if (moduleIdentifier) { // server build
+	    hook = function (context) {
+	      // 2.3 injection
+	      context = context || (this.$vnode && this.$vnode.ssrContext)
+	      // 2.2 with runInNewContext: true
+	      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+	        context = __VUE_SSR_CONTEXT__
+	      }
+	      // inject component styles
+	      if (injectStyles) {
+	        injectStyles.call(this, context)
+	      }
+	      // register component module identifier for async chunk inferrence
+	      if (context && context._registeredComponents) {
+	        context._registeredComponents.add(moduleIdentifier)
+	      }
+	    }
+	    // used by ssr in case component is cached and beforeCreate
+	    // never gets called
+	    options._ssrRegister = hook
+	  } else if (injectStyles) {
+	    hook = injectStyles
+	  }
+
+	  if (hook) {
+	    // inject component registration as beforeCreate hook
+	    var existing = options.beforeCreate
+	    options.beforeCreate = existing
+	      ? [].concat(existing, hook)
+	      : [hook]
 	  }
 
 	  return {
@@ -112,14 +142,14 @@ module.exports =
 
 /***/ },
 
-/***/ 218:
+/***/ 223:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _pagination = __webpack_require__(219);
+	var _pagination = __webpack_require__(224);
 
 	var _pagination2 = _interopRequireDefault(_pagination);
 
@@ -134,22 +164,22 @@ module.exports =
 
 /***/ },
 
-/***/ 219:
+/***/ 224:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _pager = __webpack_require__(220);
+	var _pager = __webpack_require__(225);
 
 	var _pager2 = _interopRequireDefault(_pager);
 
-	var _select = __webpack_require__(223);
+	var _select = __webpack_require__(228);
 
 	var _select2 = _interopRequireDefault(_select);
 
-	var _option = __webpack_require__(224);
+	var _option = __webpack_require__(229);
 
 	var _option2 = _interopRequireDefault(_option);
 
@@ -277,7 +307,7 @@ module.exports =
 	    });
 
 	    if (haveRightWrapper) {
-	      template.children.push(rightWrapper);
+	      template.children.unshift(rightWrapper);
 	    }
 
 	    return template;
@@ -432,6 +462,7 @@ module.exports =
 	              attrs: { type: 'number',
 	                min: 1,
 	                max: this.internalPageCount,
+	                value: this.$parent.internalCurrentPage,
 
 	                number: true },
 	              domProps: {
@@ -440,9 +471,8 @@ module.exports =
 	              on: {
 	                'change': this.handleChange,
 	                'focus': this.handleFocus
-	              },
-
-	              style: { width: '30px' } },
+	              }
+	            },
 	            []
 	          ), this.t('el.pagination.pageClassifier')]
 	        );
@@ -544,10 +574,12 @@ module.exports =
 	        this.$nextTick(function () {
 	          _this2.internalCurrentPage = newVal;
 	          if (oldVal !== newVal) {
+	            _this2.$emit('update:currentPage', newVal);
 	            _this2.$emit('current-change', _this2.internalCurrentPage);
 	          }
 	        });
 	      } else {
+	        this.$emit('update:currentPage', newVal);
 	        this.$emit('current-change', this.internalCurrentPage);
 	      }
 	    },
@@ -565,17 +597,19 @@ module.exports =
 
 /***/ },
 
-/***/ 220:
+/***/ 225:
 /***/ function(module, exports, __webpack_require__) {
 
 	var Component = __webpack_require__(3)(
 	  /* script */
-	  __webpack_require__(221),
+	  __webpack_require__(226),
 	  /* template */
-	  __webpack_require__(222),
+	  __webpack_require__(227),
+	  /* styles */
+	  null,
 	  /* scopeId */
 	  null,
-	  /* cssModules */
+	  /* moduleIdentifier (server only) */
 	  null
 	)
 
@@ -584,7 +618,7 @@ module.exports =
 
 /***/ },
 
-/***/ 221:
+/***/ 226:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -738,7 +772,7 @@ module.exports =
 
 /***/ },
 
-/***/ 222:
+/***/ 227:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -791,14 +825,14 @@ module.exports =
 
 /***/ },
 
-/***/ 223:
+/***/ 228:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/select");
 
 /***/ },
 
-/***/ 224:
+/***/ 229:
 /***/ function(module, exports) {
 
 	module.exports = require("element-ui/lib/option");

@@ -46,7 +46,7 @@ module.exports =
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(293);
+	module.exports = __webpack_require__(296);
 
 
 /***/ },
@@ -54,11 +54,17 @@ module.exports =
 /***/ 3:
 /***/ function(module, exports) {
 
+	/* globals __VUE_SSR_CONTEXT__ */
+
+	// this module is a runtime utility for cleaner component module output and will
+	// be included in the final webpack user bundle
+
 	module.exports = function normalizeComponent (
 	  rawScriptExports,
 	  compiledTemplate,
+	  injectStyles,
 	  scopeId,
-	  cssModules
+	  moduleIdentifier /* server only */
 	) {
 	  var esModule
 	  var scriptExports = rawScriptExports = rawScriptExports || {}
@@ -86,13 +92,37 @@ module.exports =
 	    options._scopeId = scopeId
 	  }
 
-	  // inject cssModules
-	  if (cssModules) {
-	    var computed = options.computed || (options.computed = {})
-	    Object.keys(cssModules).forEach(function (key) {
-	      var module = cssModules[key]
-	      computed[key] = function () { return module }
-	    })
+	  var hook
+	  if (moduleIdentifier) { // server build
+	    hook = function (context) {
+	      // 2.3 injection
+	      context = context || (this.$vnode && this.$vnode.ssrContext)
+	      // 2.2 with runInNewContext: true
+	      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+	        context = __VUE_SSR_CONTEXT__
+	      }
+	      // inject component styles
+	      if (injectStyles) {
+	        injectStyles.call(this, context)
+	      }
+	      // register component module identifier for async chunk inferrence
+	      if (context && context._registeredComponents) {
+	        context._registeredComponents.add(moduleIdentifier)
+	      }
+	    }
+	    // used by ssr in case component is cached and beforeCreate
+	    // never gets called
+	    options._ssrRegister = hook
+	  } else if (injectStyles) {
+	    hook = injectStyles
+	  }
+
+	  if (hook) {
+	    // inject component registration as beforeCreate hook
+	    var existing = options.beforeCreate
+	    options.beforeCreate = existing
+	      ? [].concat(existing, hook)
+	      : [hook]
 	  }
 
 	  return {
@@ -105,14 +135,14 @@ module.exports =
 
 /***/ },
 
-/***/ 293:
+/***/ 296:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _component = __webpack_require__(294);
+	var _component = __webpack_require__(297);
 
 	var _component2 = _interopRequireDefault(_component);
 
@@ -127,17 +157,19 @@ module.exports =
 
 /***/ },
 
-/***/ 294:
+/***/ 297:
 /***/ function(module, exports, __webpack_require__) {
 
 	var Component = __webpack_require__(3)(
 	  /* script */
-	  __webpack_require__(295),
+	  __webpack_require__(298),
 	  /* template */
-	  __webpack_require__(296),
+	  __webpack_require__(299),
+	  /* styles */
+	  null,
 	  /* scopeId */
 	  null,
-	  /* cssModules */
+	  /* moduleIdentifier (server only) */
 	  null
 	)
 
@@ -146,12 +178,14 @@ module.exports =
 
 /***/ },
 
-/***/ 295:
+/***/ 298:
 /***/ function(module, exports) {
 
 	'use strict';
 
 	exports.__esModule = true;
+	//
+	//
 	//
 	//
 	//
@@ -191,7 +225,7 @@ module.exports =
 	  name: 'ElSwitch',
 	  props: {
 	    value: {
-	      type: Boolean,
+	      type: [Boolean, String, Number],
 	      default: true
 	    },
 	    disabled: {
@@ -226,6 +260,14 @@ module.exports =
 	      type: String,
 	      default: ''
 	    },
+	    onValue: {
+	      type: [Boolean, String, Number],
+	      default: true
+	    },
+	    offValue: {
+	      type: [Boolean, String, Number],
+	      default: false
+	    },
 	    name: {
 	      type: String,
 	      default: ''
@@ -236,27 +278,26 @@ module.exports =
 	      coreWidth: this.width
 	    };
 	  },
+	  created: function created() {
+	    if (!~[this.onValue, this.offValue].indexOf(this.value)) {
+	      this.$emit('input', this.offValue);
+	    }
+	  },
 
 	  computed: {
+	    checked: function checked() {
+	      return this.value === this.onValue;
+	    },
 	    hasText: function hasText() {
 	      /* istanbul ignore next */
 	      return this.onText || this.offText;
 	    },
-
-	    _value: {
-	      get: function get() {
-	        return this.value;
-	      },
-	      set: function set(val) {
-	        this.$emit('input', val);
-	      }
-	    },
 	    transform: function transform() {
-	      return this.value ? 'translate(' + (this.coreWidth - 20) + 'px, 2px)' : 'translate(2px, 2px)';
+	      return this.checked ? 'translate(' + (this.coreWidth - 20) + 'px, 2px)' : 'translate(2px, 2px)';
 	    }
 	  },
 	  watch: {
-	    value: function value() {
+	    checked: function checked() {
 	      if (this.onColor || this.offColor) {
 	        this.setBackgroundColor();
 	      }
@@ -264,10 +305,18 @@ module.exports =
 	  },
 	  methods: {
 	    handleChange: function handleChange(event) {
-	      this.$emit('change', event.currentTarget.checked);
+	      var _this = this;
+
+	      this.$emit('change', !this.checked ? this.onValue : this.offValue);
+	      this.$emit('input', !this.checked ? this.onValue : this.offValue);
+	      this.$nextTick(function () {
+	        // set input's checked property
+	        // in case parent refuses to change component's value
+	        _this.$refs.input.checked = _this.checked;
+	      });
 	    },
 	    setBackgroundColor: function setBackgroundColor() {
-	      var newColor = this.value ? this.onColor : this.offColor;
+	      var newColor = this.checked ? this.onColor : this.offColor;
 	      this.$refs.core.style.borderColor = newColor;
 	      this.$refs.core.style.backgroundColor = newColor;
 	    }
@@ -280,19 +329,20 @@ module.exports =
 	    if (this.onColor || this.offColor) {
 	      this.setBackgroundColor();
 	    }
+	    this.$refs.input.checked = this.checked;
 	  }
 	};
 
 /***/ },
 
-/***/ 296:
+/***/ 299:
 /***/ function(module, exports) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
 	  return _c('label', {
 	    staticClass: "el-switch",
 	    class: {
-	      'is-disabled': _vm.disabled, 'el-switch--wide': _vm.hasText
+	      'is-disabled': _vm.disabled, 'el-switch--wide': _vm.hasText, 'is-checked': _vm.checked
 	    }
 	  }, [_c('div', {
 	    directives: [{
@@ -303,38 +353,17 @@ module.exports =
 	    }],
 	    staticClass: "el-switch__mask"
 	  }), _c('input', {
-	    directives: [{
-	      name: "model",
-	      rawName: "v-model",
-	      value: (_vm._value),
-	      expression: "_value"
-	    }],
+	    ref: "input",
 	    staticClass: "el-switch__input",
 	    attrs: {
 	      "type": "checkbox",
 	      "name": _vm.name,
+	      "true-value": _vm.onValue,
+	      "false-value": _vm.offValue,
 	      "disabled": _vm.disabled
 	    },
-	    domProps: {
-	      "checked": Array.isArray(_vm._value) ? _vm._i(_vm._value, null) > -1 : (_vm._value)
-	    },
 	    on: {
-	      "change": [function($event) {
-	        var $$a = _vm._value,
-	          $$el = $event.target,
-	          $$c = $$el.checked ? (true) : (false);
-	        if (Array.isArray($$a)) {
-	          var $$v = null,
-	            $$i = _vm._i($$a, $$v);
-	          if ($$c) {
-	            $$i < 0 && (_vm._value = $$a.concat($$v))
-	          } else {
-	            $$i > -1 && (_vm._value = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
-	          }
-	        } else {
-	          _vm._value = $$c
-	        }
-	      }, _vm.handleChange]
+	      "change": _vm.handleChange
 	    }
 	  }), _c('span', {
 	    ref: "core",
@@ -355,8 +384,8 @@ module.exports =
 	    directives: [{
 	      name: "show",
 	      rawName: "v-show",
-	      value: (_vm.value),
-	      expression: "value"
+	      value: (_vm.checked),
+	      expression: "checked"
 	    }],
 	    staticClass: "el-switch__label el-switch__label--left",
 	    style: ({
@@ -372,8 +401,8 @@ module.exports =
 	    directives: [{
 	      name: "show",
 	      rawName: "v-show",
-	      value: (!_vm.value),
-	      expression: "!value"
+	      value: (!_vm.checked),
+	      expression: "!checked"
 	    }],
 	    staticClass: "el-switch__label el-switch__label--right",
 	    style: ({

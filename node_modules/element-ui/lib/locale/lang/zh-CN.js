@@ -65,6 +65,7 @@ exports.default = {
     },
     cascader: {
       noMatch: '无匹配数据',
+      loading: '加载中',
       placeholder: '请选择'
     },
     pagination: {
@@ -88,10 +89,19 @@ exports.default = {
       emptyText: '暂无数据',
       confirmFilter: '筛选',
       resetFilter: '重置',
-      clearFilter: '全部'
+      clearFilter: '全部',
+      sumText: '合计'
     },
     tree: {
       emptyText: '暂无数据'
+    },
+    transfer: {
+      noMatch: '无匹配数据',
+      noData: '无数据',
+      titles: ['列表 1', '列表 2'],
+      filterPlaceholder: '请输入搜索内容',
+      noCheckedFormat: '共 {total} 项',
+      hasCheckedFormat: '已选 {checked}/{total} 项'
     }
   }
 };
