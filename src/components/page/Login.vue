@@ -12,7 +12,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <!--<p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>-->
+                <img v-on:click="githubClick" src="../../../static/images/github.png" />
             </el-form>
         </div>
     </div>
@@ -53,6 +53,33 @@
                         return false;
                     }
                 });
+            },
+            // github登录点击事件
+            githubClick: function(){
+            		// 获取url里面的code
+            		var code = this.getUrlData('code');
+            		this.$http.get("https://api.hgdqdev.cn/api/github/user_info",
+				{
+					params:{
+						code: code,
+	        			}
+				}
+			).then((response) => {
+	            	if(response.data.status == 100){
+	            		alert(response.data.data.login);
+	            	}else{
+	            		
+		        }
+		        }, (response) => {
+	
+		        });
+            },
+            getUrlData:function(name){
+            		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null)
+				return unescape(r[2]);
+				return null;
             }
         }
     }
@@ -79,7 +106,7 @@
         left:50%;
         top:50%;
         width:300px;
-        height:160px;
+        height:200px;
         margin:-150px 0 0 -190px;
         padding:40px;
         border-radius: 5px;
@@ -91,5 +118,9 @@
     .login-btn button{
         width:100%;
         height:36px;
+    }
+    img {
+    		width: 80px;
+    		height: 80px;
     }
 </style>
