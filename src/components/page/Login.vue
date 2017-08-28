@@ -42,6 +42,28 @@
         components: {
             VueResource
         },
+        created: function(){
+        		// 获取url里面的code
+        		var code = this.getUrlData('code') || '';
+        		if (code == '') {
+        			return;
+        		}
+        		this.$http.get("https://api.hgdqdev.cn/api/github/user_info",
+			{
+				params:{
+					code: code,
+        			}
+			}
+			).then((response) => {
+	            	if(response.data.status == 100){
+	            		alert(response.data.data.login);
+	            	}else{
+	            		
+		        }
+	        }, (response) => {
+
+	        });
+        },
         methods: {
             submitForm(formName) {
                 const self = this;
@@ -56,23 +78,7 @@
             },
             // github登录点击事件
             githubClick: function(){
-            		// 获取url里面的code
-            		var code = this.getUrlData('code');
-            		this.$http.get("https://api.hgdqdev.cn/api/github/user_info",
-				{
-					params:{
-						code: code,
-	        			}
-				}
-			).then((response) => {
-	            	if(response.data.status == 100){
-	            		alert(response.data.data.login);
-	            	}else{
-	            		
-		        }
-		        }, (response) => {
-	
-		        });
+            		window.location.href 'https://github.com/login/oauth/authorize?client_id=75d6ff0d7a95f88acae6&redirect_uri=http://manage.hgdqdev.cn/#/login'
             },
             getUrlData:function(name){
             		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
