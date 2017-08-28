@@ -56,7 +56,7 @@
 			}
 			).then((response) => {
 	            	if(response.data.status == 100){
-	            		alert(response.data.data.login);
+	            		this.ruleForm.username = response.data.data.login
 	            	}else{
 	            		
 		        }
