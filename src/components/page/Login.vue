@@ -78,7 +78,7 @@
             },
             // github登录点击事件
             githubClick: function(){
-            		window.location.href = 'https://github.com/login/oauth/authorize?client_id=75d6ff0d7a95f88acae6&redirect_uri=http://manage.hgdqdev.cn/#/login'
+            		window.location.href = 'https://github.com/login/oauth/authorize?client_id=75d6ff0d7a95f88acae6&redirect_uri=https://manage.hgdqdev.cn/#/login'
             },
             getUrlData:function(name){
             		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
